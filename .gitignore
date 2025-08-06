@@ -18,7 +18,6 @@ var/
 wheels/
 *.egg-info/
 .installed.cfg
-*.egg
 
 # Virtual Environment
 venv/
@@ -43,7 +42,7 @@ Thumbs.db
 # Local configuration
 *.local
 
-# Project specific
-framework.jar
-monkey.jar
-*.docx
+# 保留项目特定的JAR文件和文档
+# framework.jar  - 项目核心库
+# monkey.jar    - 项目依赖库
+# *.docx       - 项目文档
