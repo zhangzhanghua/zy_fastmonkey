@@ -2,7 +2,7 @@
 {
     "firstList":
     [
-        {  "xpath": "//*[contains(@text,'绝地求生')]" }
+        {  "xpath": "//*[contains(@text,'求生')]" }
     ],
     "selectList":
     [

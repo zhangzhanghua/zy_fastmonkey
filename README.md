@@ -3,15 +3,39 @@
 > An efficient Android Monkey Tester, available for emulators and real devices
 > 基于遍历规则的高性能Android Monkey，适用于真机/模拟器的APP UI压力测试
 
-https://testerhome.com/topics/11719
 
 # 环境预备
-* 支持 Android 5，6，7，8，9、10、11真机及模拟器;
-* 将 framework.jar , monkey.jar push 到手机上某个目录中，建议`/sdcard`
+
+## 系统要求
+* 支持 Android 5.0 及更高版本 (Android 5.0+)
+* 需要开启 USB 调试模式
+* 建议使用 Android 10 或更高版本获得最佳体验
+
+## 快速开始
+1. 确保已安装 ADB 工具并配置好环境变量
+2. 连接设备并授权 USB 调试
+3. 推送必要文件到设备：
+```bash
+# 创建专用目录
+adb shell mkdir -p /sdcard/maxim
+
+# 推送必要文件
+adb push framework.jar /sdcard/maxim/
+adb push monkey.jar /sdcard/maxim/
+
+# 设置文件权限
+adb shell chmod 644 /sdcard/maxim/*
 ```
-adb push framework.jar /sdcard
-adb push monkey.jar /sdcard
-```
+
+## 兼容性说明
+- **Android 10+**: 完全支持
+- **Android 9.0 (Pie)**: 完全支持
+- **Android 8.x (Oreo)**: 完全支持
+- **Android 7.x (Nougat)**: 完全支持
+- **Android 6.0 (Marshmallow)**: 基本支持
+- **Android 5.0/5.1 (Lollipop)**: 基本支持，部分功能可能受限
+
+> 注意：对于 Android 11+ 设备，请确保已授予 `WRITE_EXTERNAL_STORAGE` 和 `READ_EXTERNAL_STORAGE` 权限。
 
 # 图形化界面
 下载 [AppetizerIO](https://appetizer.io/cn/)：`APP测试->UI压力测试`，支持多种模式，黑白名单，所有配置文件（自动json语法查错），测试开始前自动push配置文件
@@ -23,12 +47,71 @@ adb push monkey.jar /sdcard
 |  ![](docs/appetizer2.png) |![](docs/appetizer3.png)|
 
 # 命令行模式
-cmd 命令 ：
-`adb shell CLASSPATH=/sdcard/monkey.jar:/sdcard/framework.jar exec app_process /system/bin tv.panda.test.monkey.Monkey -p com.panda.videoliveplatform --uiautomatormix --running-minutes 60 -v -v`
 
-* `tv.panda.test.monkey.Monkey`： monkey入口类，不要修改
-* `com.panda.videoliveplatform`： 被测app包名，需要修改
-* `--uiautomatormix`： 遍历策略
+## 基本用法
+```bash
+adb shell CLASSPATH=/sdcard/maxim/monkey.jar:/sdcard/maxim/framework.jar \
+    exec app_process /system/bin tv.panda.test.monkey.Monkey \
+    -p 你的应用包名 \
+    --uiautomatormix \
+    --running-minutes 60 \
+    -v -v
+```
+
+## 参数说明
+* `tv.panda.test.monkey.Monkey` - Monkey 入口类（固定）
+* `-p 你的应用包名` - 要测试的应用包名（必填）
+* `--uiautomatormix` - 混合遍历策略（推荐）
+* `--running-minutes 60` - 运行时间（分钟）
+* `-v -v` - 详细日志输出
+
+## 高级用法
+
+### 1. 使用 DFS 深度遍历策略
+```bash
+adb shell CLASSPATH=/sdcard/maxim/monkey.jar:/sdcard/maxim/framework.jar \
+    exec app_process /system/bin tv.panda.test.monkey.Monkey \
+    -p 你的应用包名 \
+    --uiautomatordfs \
+    --running-minutes 30
+```
+
+### 2. 设置事件间隔（毫秒）
+```bash
+--throttle 500  # 每个事件间隔500毫秒
+```
+
+### 3. 指定输出目录（Android 10+）
+```bash
+--output-directory /sdcard/maxim/results/
+```
+
+## 兼容性提示
+- 对于 Android 10+ 设备，请确保应用已授予存储权限
+- 如果遇到权限问题，可以尝试使用 `--grant-all-permissions` 参数
+- 在 Android 11+ 上，可能需要手动授予 `MANAGE_EXTERNAL_STORAGE` 权限
+
+## 常见问题
+
+### 1. 命令执行无响应
+- 检查设备是否已授权 USB 调试
+- 确认文件路径和权限正确
+- 尝试重启 adb 服务：`adb kill-server && adb start-server`
+
+### 2. 存储权限问题
+```bash
+# 检查存储权限
+adb shell pm list permissions -g | grep storage
+
+# 授予存储权限
+adb shell pm grant 你的应用包名 android.permission.WRITE_EXTERNAL_STORAGE
+adb shell pm grant 你的应用包名 android.permission.READ_EXTERNAL_STORAGE
+```
+
+### 3. 性能优化
+- 增加 `--throttle` 值可降低 CPU 使用率
+- 使用 `--pct-touch` 调整触摸事件比例
+- 对于性能较差的设备，可以减少并发线程数
 
 # 策略
 
