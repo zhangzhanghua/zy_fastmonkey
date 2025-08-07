@@ -37,15 +37,6 @@ adb shell chmod 644 /sdcard/maxim/*
 
 > 注意：对于 Android 11+ 设备，请确保已授予 `WRITE_EXTERNAL_STORAGE` 和 `READ_EXTERNAL_STORAGE` 权限。
 
-# 图形化界面
-下载 [AppetizerIO](https://appetizer.io/cn/)：`APP测试->UI压力测试`，支持多种模式，黑白名单，所有配置文件（自动json语法查错），测试开始前自动push配置文件
-
-![](docs/appetizer1.png)
-
-|  测试过程log实时更新  | 一键错误log上报作者 |
-|:-----------------:| :---------------:
-|  ![](docs/appetizer2.png) |![](docs/appetizer3.png)|
-
 # 命令行模式
 
 ## 基本用法
